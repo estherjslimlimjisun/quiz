@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>생활일본어 2단원 형성평가</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --border-color: #e2e8f0;
+            --correct-color: #16a34a;
+            --incorrect-color: #dc2626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            border: 1px solid var(--border-color);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: #fff;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-excel {
+            background-color: #16a34a;
+        }
+
+        .btn-excel:hover {
+            background-color: #15803d;
+        }
+
+        /* Quiz Styles */
+        .quiz-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .quiz-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .badge {
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            white-space: nowrap;
+            margin-top: 2px;
+        }
+
+        .passage {
+            background: #ffffff;
+            border-left: 4px solid var(--primary-color);
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .options-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ox-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .ox-btn {
+            flex: 1;
+            padding: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            font-size: 1.25rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .ox-btn.selected {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+            color: var(--primary-color);
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-option:hover {
+            border-color: var(--primary-color);
+        }
+
+        .radio-option input[type="radio"] {
+            accent-color: var(--primary-color);
+            width: 18px;
+            height: 18px;
+        }
+
+        textarea, input[type="text"].essay-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .timer-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f1f5f9;
+            padding: 10px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* Result Styles */
+        .score-card {
+            text-align: center;
+            padding: 24px;
+            background: #eff6ff;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+
+        .score-num {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .result-item {
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .res-status {
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .res-status.correct { color: var(--correct-color); }
+        .res-status.incorrect { color: var(--incorrect-color); }
+
+        .explanation {
+            font-size: 0.85rem;
+            color: #475569;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>생활일본어 2단원 형성평가</h1>
+        <p class="subtitle">단원명: はじめまして (자기소개 및 가족 호칭)</p>
+    </header>
+
+    <!-- STEP 1: 학생 정보 입력 -->
+    <div id="step-info" class="step active">
+        <div class="form-group">
+            <label for="grade">학년</label>
+            <select id="grade">
+                <option value="3학년" selected>3학년</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="classNum">반</label>
+            <select id="classNum">
+                <!-- 1~7반 생성 -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="studentNum">번호</label>
+            <select id="studentNum">
+                <!-- 1~35번 생성 -->
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="studentName">이름</label>
+            <input type="text" id="studentName" placeholder="이름을 입력하세요" autocomplete="off">
+        </div>
+
+        <button class="btn" onclick="startQuiz()">평가 시작하기</button>
+    </div>
+
+    <!-- STEP 2: 퀴즈 풀이 -->
+    <div id="step-quiz" class="step">
+        <div class="timer-bar">
+            <span>⏱️ 경과 시간: <span id="timerDisplay">00:00</span></span>
+            <span>📝 총 5문항</span>
+        </div>
+
+        <form id="quizForm">
+            <!-- Q1. OX 퀴즈 -->
+            <div class="quiz-card">
+                <div class="quiz-title">
+                    <span class="badge">OX 퀴즈</span>
+                    <span>1. 일본어에서는 나의 가족을 남에게 소개할 때와 남의 가족을 말할 때 호칭을 구별하여 사용한다.</span>
+                </div>
+                <div class="ox-group">
+                    <button type="button" class="ox-btn" onclick="selectOX('q1', 'O', this)">O</button>
+                    <button type="button" class="ox-btn" onclick="selectOX('q1', 'X', this)">X</button>
+                </div>
+                <input type="hidden" name="q1" id="q1">
+            </div>
+
+            <!-- Q2. OX 퀴즈 -->
+            <div class="quiz-card">
+                <div class="quiz-title">
+                    <span class="badge">OX 퀴즈</span>
+                    <span>2. 일본의 대다수 중학교는 정규 수업으로 수영을 배우기 때문에 대부분 학교에 수영장이 갖춰져 있다.</span>
+                </div>
+                <div class="ox-group">
+                    <button type="button" class="ox-btn" onclick="selectOX('q2', 'O', this)">O</button>
+                    <button type="button" class="ox-btn" onclick="selectOX('q2', 'X', this)">X</button>
+                </div>
+                <input type="hidden" name="q2" id="q2">
+            </div>
+
+            <!-- Q3. 5지선다형 -->
+            <div class="quiz-card">
+                <div class="quiz-title">
+                    <span class="badge">5지선다</span>
+                    <span>3. 남에게 '나의 어머니'를 소개할 때 사용하는 알맞은 일본어 호칭은 무엇인가요?</span>
+                </div>
+                <div class="options-group">
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="1"> 1) おかあさん (오카아상)
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="2"> 2) はは (하하)
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="3"> 3) おばあさん (오바아상)
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="4"> 4) ちち (치치)
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q3" value="5"> 5) あね (아네)
+                    </label>
+                </div>
+            </div>
+
+            <!-- Q4. 5지선다형 -->
+            <div class="quiz-card">
+                <div class="quiz-title">
+                    <span class="badge">5지선다</span>
+                    <span>4. 다음 대화의 빈칸 (A)에 들어갈 출신지 표현으로 알맞은 것은?</span>
+                </div>
+                <div class="passage">
+                    A: はじめまして。 (처음 뵙겠습니다.)<br>
+                    B: はじめまして。 わたしは ユリです。(A)____________。<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;(오사카에서 왔습니다.)
+                </div>
+                <div class="options-group">
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="1"> 1) おおさかです
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="2"> 2) おおさかと ははです
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="3"> 3) おおさから きました
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="4"> 4) おおさかの ぼくです
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="q4" value="5"> 5) おおさかから きました
+                    </label>
+                </div>
+            </div>
+
+            <!-- Q5. 서술형 -->
+            <div class="quiz-card">
+                <div class="quiz-title">
+                    <span class="badge">서술형</span>
+                    <span>5. '나의 형/오빠'를 남에게 말할 때 쓰는 호칭과, '다른 사람의 형/오빠'를 부를 때 쓰는 호칭을 히라가나로 입력하세요.</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <div>
+                        <label style="font-size: 0.85rem; font-weight: normal; color: #475569;">① 나의 형/오빠 (히라가나):</label>
+                        <input type="text" class="essay-input" id="q5_1" placeholder="예: あに">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85rem; font-weight: normal; color: #475569;">② 남의 형/오빠 (히라가나):</label>
+                        <input type="text" class="essay-input" id="q5_2" placeholder="예: おにいさん">
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn" onclick="submitQuiz()">답안 제출하기</button>
+        </form>
+    </div>
+
+    <!-- STEP 3: 평가 결과 및 엑셀 다운로드 -->
+    <div id="step-result" class="step">
+        <div class="score-card">
+            <h2 id="resultStudentInfo">3학년 1반 1번 홍길동</h2>
+            <p style="margin-top: 8px; color: #475569;">수업 형성평가가 완료되었습니다!</p>
+            <div class="score-num" id="totalScore">0점</div>
+            <p style="font-size: 0.9rem; color: #64748b;">작성 소요 시간: <span id="finalTime">00:00</span></p>
+        </div>
+
+        <div id="resultDetails" style="margin-bottom: 24px;">
+            <!-- 문항별 결과 dynamic rendering -->
+        </div>
+
+        <button class="btn btn-excel" onclick="exportToExcel()">📥 엑셀파일로 결과 내보내기 (.csv)</button>
+    </div>
+</div>
+
+<script>
+    // 1. 드롭다운 데이터 생성
+    window.onload = function() {
+        const classSelect = document.getElementById('classNum');
+        for (let i = 1; i <= 7; i++) {
+            let opt = document.createElement('option');
+            opt.value = i + '반';
+            opt.innerText = i + '반';
+            classSelect.appendChild(opt);
+        }
+
+        const numSelect = document.getElementById('studentNum');
+        for (let i = 1; i <= 35; i++) {
+            let opt = document.createElement('option');
+            opt.value = i + '번';
+            opt.innerText = i + '번';
+            numSelect.appendChild(opt);
+        }
+    };
+
+    // 타이머 및 평가 상태 관리
+    let startTime;
+    let timerInterval;
+    let elapsedTimeStr = "00:00";
+    let studentData = {};
+    let quizResult = {};
+
+    function startQuiz() {
+        const name = document.getElementById('studentName').value.trim();
+        if (!name) {
+            alert('이름을 입력해주세요.');
+            return;
+        }
+
+        studentData = {
+            grade: document.getElementById('grade').value,
+            classNum: document.getElementById('classNum').value,
+            studentNum: document.getElementById('studentNum').value,
+            name: name
+        };
+
+        // 화면 전환
+        document.getElementById('step-info').classList.remove('active');
+        document.getElementById('step-quiz').classList.add('active');
+
+        // 타이머 시작
+        startTime = new Date();
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+        const now = new Date();
+        const diff = Math.floor((now - startTime) / 1000);
+        const mins = String(Math.floor(diff / 60)).padStart(2, '0');
+        const secs = String(diff % 60).padStart(2, '0');
+        elapsedTimeStr = `${mins}:${secs}`;
+        document.getElementById('timerDisplay').innerText = elapsedTimeStr;
+    }
+
+    function selectOX(questionId, value, btnElem) {
+        document.getElementById(questionId).value = value;
+        const parent = btnElem.parentElement;
+        const btns = parent.querySelectorAll('.ox-btn');
+        btns.forEach(b => b.classList.remove('selected'));
+        btnElem.classList.add('selected');
+    }
+
+    // 정답 정의 (Q1: O, Q2: O, Q3: 2(はは), Q4: 5(から きました), Q5: あに / おにいさん)
+    const answers = {
+        q1: 'O',
+        q2: 'O',
+        q3: '2',
+        q4: '5',
+        q5_1: 'あに',
+        q5_2: 'おにいさん'
+    };
+
+    function submitQuiz() {
+        const q1Val = document.getElementById('q1').value;
+        const q2Val = document.getElementById('q2').value;
+        const q3Elem = document.querySelector('input[name="q3"]:checked');
+        const q4Elem = document.querySelector('input[name="q4"]:checked');
+        const q5_1Val = document.getElementById('q5_1').value.trim();
+        const q5_2Val = document.getElementById('q5_2').value.trim();
+
+        if (!q1Val || !q2Val || !q3Elem || !q4Elem || !q5_1Val || !q5_2Val) {
+            if (!confirm('미응답 문항이 있습니다. 이대로 제출하시겠습니까?')) {
+                return;
+            }
+        }
+
+        clearInterval(timerInterval);
+
+        const q3Val = q3Elem ? q3Elem.value : '';
+        const q4Val = q4Elem ? q4Elem.value : '';
+
+        // 채점 진행 (각 20점)
+        let score = 0;
+        let details = [];
+
+        // Q1
+        const q1Correct = (q1Val === answers.q1);
+        if (q1Correct) score += 20;
+        details.push({
+            no: '문항 1 (OX)',
+            userAns: q1Val || '미응답',
+            correctAns: answers.q1,
+            isCorrect: q1Correct,
+            exp: '일본어는 나의 가족과 남의 가족 호칭을 구별하여 사용합니다.'
+        });
+
+        // Q2
+        const q2Correct = (q2Val === answers.q2);
+        if (q2Correct) score += 20;
+        details.push({
+            no: '문항 2 (OX)',
+            userAns: q2Val || '미응답',
+            correctAns: answers.q2,
+            isCorrect: q2Correct,
+            exp: '일본 중학교는 수영 수업이 정규 교육과정이므로 대부분 수영장을 보유하고 있습니다.'
+        });
+
+        // Q3
+        const q3Correct = (q3Val === answers.q3);
+        if (q3Correct) score += 20;
+        details.push({
+            no: '문항 3 (5지선다)',
+            userAns: q3Val ? `${q3Val}번` : '미응답',
+            correctAns: '2번 (はは)',
+            isCorrect: q3Correct,
+            exp: '남에게 나의 어머니를 소개할 때는 はは(하하)를 사용합니다.'
+        });
+
+        // Q4
+        const q4Correct = (q4Val === answers.q4);
+        if (q4Correct) score += 20;
+        details.push({
+            no: '문항 4 (5지선다)',
+            userAns: q4Val ? `${q4Val}번` : '미응답',
+            correctAns: '5번 (おおさかから きました)',
+            isCorrect: q4Correct,
+            exp: '출신지를 말할 때는 "[장소] + から きました (~에서 왔습니다)"를 씁니다.'
+        });
+
+        // Q5
+        const q5_1Correct = (q5_1Val.replaceAll(' ', '') === answers.q5_1);
+        const q5_2Correct = (q5_2Val.replaceAll(' ', '') === answers.q5_2);
+        const q5Correct = q5_1Correct && q5_2Correct;
+        if (q5Correct) score += 20;
+        else if (q5_1Correct || q5_2Correct) score += 10; // 부분 점수
+
+        details.push({
+            no: '문항 5 (서술형)',
+            userAns: `① ${q5_1Val || '미응답'}, ② ${q5_2Val || '미응답'}`,
+            correctAns: '① あに, ② おにいさん',
+            isCorrect: q5Correct,
+            exp: '나의 형/오빠는 あに, 남의 형/오빠는 おにいさん입니다.'
+        });
+
+        quizResult = {
+            score: score,
+            time: elapsedTimeStr,
+            details: details,
+            userAnswersRaw: {
+                q1: q1Val,
+                q2: q2Val,
+                q3: q3Val,
+                q4: q4Val,
+                q5: `① ${q5_1Val} / ② ${q5_2Val}`
+            }
+        };
+
+        // 결과 화면 표시
+        document.getElementById('step-quiz').classList.remove('active');
+        document.getElementById('step-result').classList.add('active');
+
+        document.getElementById('resultStudentInfo').innerText = 
+            `${studentData.grade} ${studentData.classNum} ${studentData.studentNum} ${studentData.name}`;
+        document.getElementById('totalScore').innerText = `${score}점`;
+        document.getElementById('finalTime').innerText = elapsedTimeStr;
+
+        // 결과 상세 목록 생성
+        const resContainer = document.getElementById('resultDetails');
+        resContainer.innerHTML = '';
+        details.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'result-item';
+            div.innerHTML = `
+                <div class="res-status ${item.isCorrect ? 'correct' : 'incorrect'}">
+                    ${item.no}: ${item.isCorrect ? '⭕ 정답' : '❌ 오답/부분점수'}
+                </div>
+                <div style="font-size: 0.9rem;">
+                    <strong>제출 답안:</strong> ${item.userAns} | <strong>정답:</strong> ${item.correctAns}
+                </div>
+                <div class="explanation">${item.exp}</div>
+            `;
+            resContainer.appendChild(div);
+        });
+    }
+
+    // 엑셀(.csv) 내보내기 기능 (UTF-8 BOM 포함)
+    function exportToExcel() {
+        const headers = [
+            "제출일시", "학년", "반", "번호", "이름", "작성 소요시간", "총점",
+            "Q1(OX) 답안", "Q2(OX) 답안", "Q3(선다) 답안", "Q4(선다) 답안", "Q5(서술형) 답안"
+        ];
+
+        const now = new Date();
+        const timeStamp = now.getFullYear() + "-" + 
+            String(now.getMonth() + 1).padStart(2, '0') + "-" + 
+            String(now.getDate()).padStart(2, '0') + " " + 
+            String(now.getHours()).padStart(2, '0') + ":" + 
+            String(now.getMinutes()).padStart(2, '0');
+
+        const row = [
+            timeStamp,
+            studentData.grade,
+            studentData.classNum,
+            studentData.studentNum,
+            studentData.name,
+            quizResult.time,
+            quizResult.score + "점",
+            quizResult.userAnswersRaw.q1,
+            quizResult.userAnswersRaw.q2,
+            quizResult.userAnswersRaw.q3 ? quizResult.userAnswersRaw.q3 + "번" : "",
+            quizResult.userAnswersRaw.q4 ? quizResult.userAnswersRaw.q4 + "번" : "",
+            `"${quizResult.userAnswersRaw.q5.replace(/"/g, '""')}"`
+        ];
+
+        let csvContent = "﻿"; // UTF-8 BOM for Excel kor
+        csvContent += headers.join(",") + "\n";
+        csvContent += row.join(",") + "\n";
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        const fileName = `일본어_형성평가결과_${studentData.classNum}_${studentData.studentNum}_${studentData.name}.csv`;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>
+
+</body>
+</html>
